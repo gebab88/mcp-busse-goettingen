@@ -91,12 +91,20 @@ departures
 timetable
   resolved: de:03152:33817, Bahnhof, Göttingen
   date: 2026-10-20
-  Soll-Abfahrten wurden geliefert (UTC und Europe/Berlin-Ortszeit).
+  RB86 | Göttingen → Einbeck Mitte
+  timetabledTime: 2026-10-20T13:25:00Z
+  timetabledTimeLocal: 2026-10-20T15:25:00+02:00
+  ICE 771 InterCityExpress | Kiel Hbf → Göttingen
+  timetabledTime: 2026-10-20T13:31:00Z
+  timetabledTimeLocal: 2026-10-20T15:31:00+02:00
 
 journey
   resolvedFrom: de:03152:33817, Bahnhof, Göttingen
   resolvedTo: de:03152:33924
-  Mindestens eine Verbindung mit legs wurde geliefert.
+  departureTime: 2026-10-20T11:10:00Z | departureTimeLocal: 2026-10-20T13:10:00+02:00
+  arrivalTime: 2026-10-20T11:58:00Z | arrivalTimeLocal: 2026-10-20T13:58:00+02:00
+  durationMinutes: 48 | interchanges: 2
+  leg: RB85 | Göttingen → Lenglern Bahnhof
 
 API-Aufrufe: 5
 ```
