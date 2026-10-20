@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { loadConfig } from '../src/config.js';
 import { ConfigError } from '../src/errors.js';
 
@@ -33,7 +33,12 @@ describe('config', () => {
   });
 
   it('throws ConfigError when RequestorRef missing', () => {
-    expect(() => loadConfig()).toThrowError(/RequestorRef/i);
+    const cwd = vi.spyOn(process, 'cwd').mockReturnValue('/path/without-a-dotenv');
+    try {
+      expect(() => loadConfig()).toThrowError(/RequestorRef/i);
+    } finally {
+      cwd.mockRestore();
+    }
   });
 
   it('returns defaults for TEST-REF', () => {
