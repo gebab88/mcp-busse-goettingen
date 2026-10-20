@@ -27,7 +27,7 @@ export async function departures(args: { stop: string; when?: string; maxResults
   const response = await ctx.client.stopEventRequest(resolved.chosen.stopPointRef, when, includeRealtime, resolved.chosen.name);
   const warnings: string[] = [];
   quotaWarning(ctx, warnings);
-  mismatch(resolved, response.departures, warnings, response.containsRequestedRef);
+  mismatch(resolved, response.departures, warnings, response.containsRequestedRef, ctx.resolver);
   if (response.dateOutOfRange) warnings.push('Für den angefragten Zeitpunkt liegen keine Daten im verfügbaren Zeitraum vor.');
   const from = isoToMinutes(when);
   const filtered = response.dateOutOfRange ? [] : response.departures.filter((d) => {

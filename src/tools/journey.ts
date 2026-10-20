@@ -37,6 +37,18 @@ export async function journey(args: { from: string; to: string; when?: string; m
       warnings.push(resolvedTo.note);
     }
     if (!firstLeg && !lastLeg) warnings.push('Mindestens eine angefragte Haltestelle existiert nicht; die Antwort kann abweichende Haltestellen betreffen.');
+  } else {
+    // Die gewünschten Haltestellen wurden geliefert. Bei Ref-Eingaben kannte der
+    // Resolver die Namen noch nicht — sie stehen in den Beinen der Verbindung.
+    const firstLeg = response.journeys[0]?.legs[0];
+    const lastJourney = response.journeys[0];
+    const lastLeg = lastJourney?.legs[lastJourney.legs.length - 1];
+    if (firstLeg?.origin) {
+      resolvedFrom.chosen = ctx.resolver.enrichFromDisplayName(resolvedFrom.chosen, firstLeg.origin);
+    }
+    if (lastLeg?.destination) {
+      resolvedTo.chosen = ctx.resolver.enrichFromDisplayName(resolvedTo.chosen, lastLeg.destination);
+    }
   }
   if (response.notripfound) warnings.push('Für diese Verbindung wurde keine Fahrt gefunden; möglicherweise ist das Tageskontingent (10.000 Aufrufe/Tag) erschöpft.');
   return buildEnvelope({ resolvedFrom, resolvedTo, journeys: response.journeys.map((item) => toJourney(item, ctx.cfg.timezone)) }, { requestUrl: ctx.cfg.baseUrl, warnings });

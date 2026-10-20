@@ -52,6 +52,44 @@ export class Resolver {
     return !!locality && this.cfg.localities.includes(locality);
   }
 
+  /**
+   * Leitet den Ort aus einem Anzeigenamen ab, z. B. "Göttingen Grüner Weg" → "Göttingen".
+   *
+   * Die StopEvent-Antwort liefert nur den Anzeigenamen der Haltestelle, nicht die
+   * separate Locality. Für die Kennzeichnung als lokal wird deshalb der Ortsname
+   * aus dem Anzeigenamen abgeleitet.
+   *
+   * Die API mischt zwei Schreibweisen:
+   *   "Göttingen Grüner Weg"   → Ort und Haltestelle durch Leerzeichen getrennt
+   *   "Geretsried, Feuerwehrschule" → Ort und Haltestelle durch Komma getrennt
+   *
+   * Deshalb wird gegen die konfigurierte Ortsliste geprüft, statt die Trennstelle
+   * zu raten: der längste passende Ortsname als Präfix gewinnt. Der Vergleich bleibt
+   * exakt — "Göttingen (Westf)" ist ein anderer Ort und wird nicht als lokal markiert.
+   */
+  localityFromDisplayName(displayName: string | undefined): string | undefined {
+    if (!displayName) return undefined;
+    for (const locality of this.cfg.localities) {
+      if (displayName === locality) return locality;
+      if (displayName.startsWith(`${locality} `) || displayName.startsWith(`${locality},`)) {
+        return locality;
+      }
+    }
+    return undefined;
+  }
+
+  /** Ergänzt eine nachträglich ermittelte Haltestelle um Ort- und Konfidenzangaben. */
+  enrichFromDisplayName(stop: Stop, displayName: string | undefined): Stop {
+    if (!displayName) return stop;
+    const locality = this.localityFromDisplayName(displayName);
+    return {
+      ...stop,
+      ...(stop.name === stop.stopPointRef ? { name: displayName } : {}),
+      ...(stop.locality === undefined && locality ? { locality } : {}),
+      ...(stop.locality === undefined ? { isLocal: this.isLocal(locality) } : {}),
+    };
+  }
+
   private toStop(location: ParsedLocation): Stop {
     return {
       ...location,

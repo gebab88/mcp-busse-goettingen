@@ -41,7 +41,7 @@ export async function timetable(args: { stop: string; date?: string; maxResults?
   const response = await ctx.client.stopEventRequest(resolved.chosen.stopPointRef, start, false, resolved.chosen.name);
   const warnings: string[] = [];
   quotaWarning(ctx, warnings);
-  mismatch(resolved, response.departures, warnings, response.containsRequestedRef);
+  mismatch(resolved, response.departures, warnings, response.containsRequestedRef, ctx.resolver);
   if (response.dateOutOfRange) warnings.push('Für den angefragten Tag liegen keine Daten im verfügbaren Zeitraum vor.');
   if (response.noEventFound) warnings.push('Für den angefragten Tag wurden keine Abfahrten gefunden.');
   const startMin = isoToMinutes(start), endMin = isoToMinutes(end);
