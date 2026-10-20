@@ -1,0 +1,38 @@
+import type { Config } from '../config.js';
+import type { Quota } from '../quota.js';
+import type { Resolver } from '../resolve.js';
+import type { TriasClient } from '../trias/client.js';
+
+export const DISCLAIMER = 'Alle Angaben ohne Gewähr.';
+
+export interface ToolEnvelope {
+  source: 'TRIAS';
+  requestUrl: string;
+  retrievedAt: string;
+  disclaimer: string;
+  warnings: string[];
+  data: unknown;
+}
+
+export interface ToolContext {
+  client: TriasClient;
+  resolver: Resolver;
+  cfg: Config;
+  quota: Quota;
+}
+
+export function buildEnvelope(data: unknown, opts: { requestUrl: string; warnings?: string[] }): ToolEnvelope {
+  return {
+    source: 'TRIAS',
+    requestUrl: opts.requestUrl,
+    retrievedAt: new Date().toISOString(),
+    disclaimer: DISCLAIMER,
+    warnings: [...(opts.warnings ?? [])],
+    data,
+  };
+}
+
+export function quotaWarning(ctx: ToolContext, warnings: string[]): void {
+  const warning = ctx.quota.warning();
+  if (warning) warnings.push(warning);
+}
