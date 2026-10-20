@@ -35,7 +35,25 @@ Der Server verwendet stdio; stdout ist ausschließlich der MCP-Protokollkanal.
 
 ## MCP-Client-Konfiguration
 
-Beispiel für OpenCode oder Claude Code:
+Der Server liest seine `.env` aus dem **Arbeitsverzeichnis**, in dem er gestartet wird. Deshalb muss der Client ihn mit `cwd` auf das Projektverzeichnis setzen — sonst findet er die `.env` nicht und startet mit „RequestorRef fehlt.".
+
+**OpenCode** (`~/.config/opencode/opencode.json`):
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "busse-goettingen": {
+        "type": "local",
+        "command": ["node", "/Users/georg/Software/MCP_Busse_Goettingen/dist/index.js"],
+        "cwd": "/Users/georg/Software/MCP_Busse_Goettingen"
+      }
+    }
+  }
+}
+```
+
+**Claude Code** (`~/.claude.json`):
 
 ```json
 {
@@ -43,16 +61,13 @@ Beispiel für OpenCode oder Claude Code:
     "busse-goettingen": {
       "command": "node",
       "args": ["/Users/georg/Software/MCP_Busse_Goettingen/dist/index.js"],
-      "env": {
-        "RequestorRef": "…",
-        "TRIAS_BASE_URL": "https://v4-api.efa.de/efa/trias"
-      }
+      "cwd": "/Users/georg/Software/MCP_Busse_Goettingen"
     }
   }
 }
 ```
 
-Alternativ liest der Server `.env` im Projektverzeichnis. Umgebungsvariablen der Kommandozeile haben Vorrang.
+So steht der `RequestorRef` **nicht** in der Client-Konfiguration, sondern bleibt in der `.env` des Projekts. Alternativ kann der Client den RequestorRef auch als Umgebungsvariable setzen; Umgebungsvariablen haben Vorrang vor der `.env`.
 
 ## Werkzeuge
 
