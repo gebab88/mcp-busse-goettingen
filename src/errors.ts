@@ -35,7 +35,7 @@ export class ValidationError extends TriasError {
 }
 
 export class HttpError extends TriasError {
-  constructor(status: number, body: string) {
+  constructor(readonly status: number, body: string) {
     const hint = body ? body.slice(0, 300) : undefined;
     super('HTTP', `Die Schnittstelle antwortete mit HTTP ${status}.`, hint);
     this.name = 'HttpError';
