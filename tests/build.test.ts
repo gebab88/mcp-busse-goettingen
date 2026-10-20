@@ -3,7 +3,6 @@ import {
   buildLocationRequest,
   buildStopEventRequest,
   buildTripRequest,
-  escapeXml,
 } from '../src/trias/build.js';
 
 describe('build', () => {
@@ -26,16 +25,26 @@ describe('build', () => {
     const xml = buildLocationRequest({
       requestorRef: 'REF-1',
       language: 'de',
-      query: "A & B <C>",
+      query: `A & B <C> "D" 'E'`,
       type: 'stop',
       maxResults: 20,
       messageId: 1,
     });
-    expect(xml).toContain('A &amp; B &lt;C&gt;');
+    expect(xml).toContain('A &amp; B &lt;C&gt; &quot;D&quot; &apos;E&apos;');
   });
 
-  it('escapeXml replaces entities', () => {
-    expect(escapeXml('A & B <C>')).toBe('A &amp; B &lt;C&gt;');
+  it('RequestorRef containing XML-sensitive characters is escaped', () => {
+    const xml = buildLocationRequest({
+      requestorRef: `R & <X> "Y" 'Z'`,
+      language: 'de',
+      query: 'Göttingen Bahnhof',
+      type: 'stop',
+      maxResults: 20,
+      messageId: 1,
+    });
+    expect(xml).toContain(
+      '<siri:RequestorRef>R &amp; &lt;X&gt; &quot;Y&quot; &apos;Z&apos;</siri:RequestorRef>',
+    );
   });
 
   it('buildStopEventRequest contains expected elements', () => {

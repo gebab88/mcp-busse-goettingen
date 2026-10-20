@@ -1,4 +1,4 @@
-export function escapeXml(s: string): string {
+function escapeXml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -7,7 +7,7 @@ export function escapeXml(s: string): string {
     .replace(/'/g, '&apos;');
 }
 
-export function header(requestorRef: string, language: string, messageId: number): string {
+function header(requestorRef: string, language: string, messageId: number): string {
   const ts = new Date().toISOString().replace(/\.\d{3}Z$/, 'Z');
   return (
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -20,7 +20,7 @@ export function header(requestorRef: string, language: string, messageId: number
   );
 }
 
-export function footer(): string {
+function footer(): string {
   return '</RequestPayload></ServiceRequest></Trias>';
 }
 
