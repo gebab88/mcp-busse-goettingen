@@ -8,6 +8,26 @@ export type ErrorCode =
   | 'NOT_FOUND'
   | 'TIMEOUT';
 
+/**
+ * Entfernt das RequestorRef aus einem Text, der nach außen gegeben wird.
+ *
+ * Der RequestorRef ist eine Zugangskennung. Er darf weder im Request-Body einer
+ * Fehlermeldung stehen, die der API-Antwort entnommen ist, noch in einem
+ * Stacktrace oder Log. Diese Funktion wird deshalb auf jeden Text angewendet,
+ * der das Werkzeug verlässt.
+ */
+export function redactSecret(text: string | undefined, secret: string | undefined): string | undefined {
+  if (!text) return text;
+  if (!secret) return text;
+  if (!text.includes(secret)) return text;
+  return text.split(secret).join('<RequestorRef>');
+}
+
+/** Wie redactSecret, aber liefert garantiert einen String. */
+export function redactSecretText(text: string, secret: string | undefined): string {
+  return redactSecret(text, secret) ?? text;
+}
+
 export class TriasError extends Error {
   readonly code: ErrorCode;
   readonly hint?: string;

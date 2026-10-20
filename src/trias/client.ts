@@ -1,5 +1,5 @@
 import type { Config } from '../config.js';
-import { EmptyResponseError, HttpError, ParseError, TimeoutError } from '../errors.js';
+import { EmptyResponseError, HttpError, ParseError, TimeoutError, redactSecret } from '../errors.js';
 import { Quota } from '../quota.js';
 import { buildLocationRequest, buildStopEventRequest, buildTripRequest } from './build.js';
 import { parseLocations, parseStopEvents, parseTrips, parseTriasDocument, refPrefix, responseContainsRef } from './parse.js';
@@ -24,7 +24,12 @@ export class TriasClient {
         signal: controller.signal,
       });
       const body = await response.text().catch(() => '');
-      if (response.status !== 200) throw new HttpError(response.status, body.slice(0, 300));
+      if (response.status !== 200) {
+        // Der Antworttext der Schnittstelle wird als Fehlerhinweis weitergegeben.
+        // Er könnte den eigenen Request-Body und damit den RequestorRef enthalten —
+        // deshalb wird er hier bereits redigiert.
+        throw new HttpError(response.status, redactSecret(body.slice(0, 300), this.cfg.requestorRef) ?? '');
+      }
       const trimmed = body.trim();
       if (trimmed === '') throw new EmptyResponseError();
       if (!trimmed.includes('<trias:Trias') && !trimmed.includes('<Trias')) throw new ParseError('Kein Trias-Wurzelelement.');

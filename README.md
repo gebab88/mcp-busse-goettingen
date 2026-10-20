@@ -63,13 +63,23 @@ Alternativ liest der Server `.env` im Projektverzeichnis. Umgebungsvariablen der
 
 Bei unscharfer Auflösung nennen `data.resolved`, `data.resolvedFrom` oder `data.resolvedTo` die tatsächlich verwendete Haltestelle. Abweichungen stehen in `warnings`.
 
+## Umgang mit dem RequestorRef
+
+Der `RequestorRef` ist eine Zugangskennung und bleibt auf diesem Rechner:
+
+- Er steht ausschließlich in `.env`, die in `.gitignore` liegt. `.env.example` enthält nur die Vorlage ohne Wert.
+- Er wird nie protokolliert. Der Server schreibt nichts auf stdout außer dem MCP-Protokoll, und Fehlermeldungen gehen auf stderr.
+- Er wird aus Fehlertexten entfernt, bevor sie das Werkzeug verlassen (`<RequestorRef>` als Platzhalter). Das betrifft auch den Antworttext der Schnittstelle, falls diese den eigenen Request-Body zurückgibt.
+- Er wird nicht weitergegeben. Die Nutzungsbedingungen von Connect erlauben die Weitergabe des Zugangs nur mit schriftlicher Zustimmung; dieser Server ist für den eigenen Gebrauch gedacht.
+
 ## Bekannte Einschränkungen
 
 - Die WAF blockiert GET-Anfragen; TRIAS wird deshalb ausschließlich per POST angesprochen.
-- Das Tageskontingent beträgt 10.000 Aufrufe pro Tag.
+- Das Tageskontingent beträgt 10.000 Aufrufe pro Tag. Der Server zählt seine eigenen Aufrufe mit und weist ab 80 % Auslastung darauf hin.
 - `RequestorRef` wird von der API nicht validiert; ein falscher Wert kann erst durch eine API-Antwort auffallen.
 - Die Haltestellen-Auflösung ist unscharf. `data.resolved` nennt immer die verwendete Haltestelle.
 - Zeiten werden in UTC und in der Zeitzone `Europe/Berlin` ausgegeben.
+- Als lokal gekennzeichnet (`isLocal`) sind nur die Orte aus `GÖTTINGEN_LOCALITIES`; voreingestellt ist allein `Göttingen`. Gleichnamige Orte wie „Göttingen (Westf)" zählen nicht als lokal.
 
 ## Verifizierte Beispiele
 
