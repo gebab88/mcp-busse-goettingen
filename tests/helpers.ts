@@ -6,6 +6,7 @@ import { TriasClient } from '../src/trias/client.js';
 import { TtlCache } from '../src/cache.js';
 import { Quota } from '../src/quota.js';
 import { loadConfig, type Config } from '../src/config.js';
+import { Resolver } from '../src/resolve.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -44,6 +45,7 @@ export async function startFakeServer(): Promise<FakeServer> {
 export function makeCtx(url: string, quota = new Quota(10000, 0.8)) {
   const cfg: Config = { ...loadConfig(), baseUrl: url, fallbackUrl: url };
   const client = new TriasClient(cfg, quota);
-  // TODO(Task 6): replace this placeholder with Resolver once that module exists.
-  return { client, resolver: undefined as any, cfg, quota, cache: new TtlCache(300) };
+  const cache = new TtlCache(300);
+  const resolver = new Resolver(client, cfg, cache);
+  return { client, resolver, cfg, quota, cache };
 }
