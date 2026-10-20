@@ -31,7 +31,9 @@ Während der Entwicklung:
 npm run dev
 ```
 
-Die Tests sind hermetisch und laufen mit oder ohne lokale `.env`-Datei.
+Die Tests sind hermetisch und laufen mit oder ohne lokale `.env`-Datei: Der RequestorRef wird in `tests/setup.ts` durch einen Platzhalter ersetzt, und alle Tests laufen gegen einen lokalen Fake-Server, nie gegen die echte Schnittstelle.
+
+Bei jedem Push prüft die GitHub-Action in `.github/workflows/ci.yml` die Typen, die Tests und den Build (Node.js 22).
 
 Der Server verwendet stdio; stdout ist ausschließlich der MCP-Protokollkanal.
 
