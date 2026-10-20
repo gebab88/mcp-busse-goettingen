@@ -70,7 +70,8 @@ Der `RequestorRef` ist eine Zugangskennung und bleibt auf diesem Rechner:
 - Er steht ausschließlich in `.env`, die in `.gitignore` liegt. `.env.example` enthält nur die Vorlage ohne Wert.
 - Er wird nie protokolliert. Der Server schreibt nichts auf stdout außer dem MCP-Protokoll, und Fehlermeldungen gehen auf stderr.
 - Er wird aus Fehlertexten entfernt, bevor sie das Werkzeug verlassen (`<RequestorRef>` als Platzhalter). Das betrifft auch den Antworttext der Schnittstelle, falls diese den eigenen Request-Body zurückgibt.
-- Er wird nicht weitergegeben. Die Nutzungsbedingungen von Connect erlauben die Weitergabe des Zugangs nur mit schriftlicher Zustimmung; dieser Server ist für den eigenen Gebrauch gedacht.
+
+Was der Code und was der Zugang betrifft, steht unter [Nutzungsbedingungen Connect](#nutzungsbedingungen-connect).
 
 ## Bekannte Einschränkungen
 
@@ -129,3 +130,12 @@ Fixture-Ausgabe und wird deshalb nicht verschwiegen.
 ## Nutzungsbedingungen Connect
 
 Die Daten dürfen nur für eigene Zwecke verwendet und nicht weiterverkauft werden. **Alle Angaben ohne Gewähr.**
+
+### Code und Zugang
+
+Der **Code** dieses Servers darf weitergegeben werden. Der **Zugang** (der `RequestorRef`) darf es nicht: Die Nutzungsbedingungen von Connect erlauben die Weitergabe der Zugangsdaten nur mit schriftlicher Zustimmung, und Connect behält sich vor, den Zugang bei Verstößen zu sperren.
+
+Ein `git clone` dieses Projekts enthält **kein** Credential — die `.env` ist nicht versioniert. Wer den Code erhält, kann sich mit einem eigenen, bei Connect beantragten `RequestorRef` Zugang verschaffen. Das ist die beabsichtigte Grenze: Der Code ist offen, der Zugang bleibt bei dem, der ihn beantragt hat.
+
+Wer den Server öffentlich betreiben will (etwa als Dienst für andere), muss das vorher mit Connect klären.
+
