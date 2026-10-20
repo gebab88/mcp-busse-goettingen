@@ -2,18 +2,13 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { makeCtx, fixture, startFakeServer } from './helpers.js';
 
 describe('Resolver integration', () => {
-  let originalRequestorRef: string | undefined;
   let server: Awaited<ReturnType<typeof startFakeServer>>;
 
   beforeEach(async () => {
-    originalRequestorRef = process.env.RequestorRef;
-    process.env.RequestorRef = 'TEST-REF';
     server = await startFakeServer();
   });
 
   afterEach(async () => {
-    if (originalRequestorRef === undefined) delete process.env.RequestorRef;
-    else process.env.RequestorRef = originalRequestorRef;
     await server.close();
   });
 

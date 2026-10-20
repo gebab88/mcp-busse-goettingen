@@ -6,7 +6,6 @@ describe('TriasClient', () => {
   let server: FakeServer;
 
   beforeEach(async () => {
-    process.env.RequestorRef = 'TEST-REF';
     server = await startFakeServer();
   });
   afterEach(async () => { await server.close(); });

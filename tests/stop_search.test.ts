@@ -6,7 +6,6 @@ let server: Awaited<ReturnType<typeof startFakeServer>> | undefined;
 afterEach(async () => { await server?.close(); server = undefined; });
 
 it('liefert Stop-Suche im gemeinsamen Envelope', async () => {
-  process.env.RequestorRef = 'TEST-REF';
   server = await startFakeServer(); server.setBody(fixture('location_goettingen.xml'));
   const env = await stopSearch({ query: 'Göttingen Bahnhof' }, makeCtx(server.url));
   expect(env.source).toBe('TRIAS'); expect(env.disclaimer).toBe('Alle Angaben ohne Gewähr.');
