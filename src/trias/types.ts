@@ -90,6 +90,8 @@ export interface RawJourney {
     mode?: string;
     origin?: string;
     destination?: string;
+    originStopPointRef?: string;
+    destinationStopPointRef?: string;
     departureTime?: string;
     arrivalTime?: string;
     platform?: string;

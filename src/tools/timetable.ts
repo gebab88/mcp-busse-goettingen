@@ -1,8 +1,8 @@
 import { ValidationError } from '../errors.js';
 import { isoToMinutes, toLocalIso } from '../time.js';
-import type { Departure, RawDeparture, ResolvedStop } from '../trias/types.js';
+import type { Departure, RawDeparture } from '../trias/types.js';
 import type { ToolContext, ToolEnvelope } from './common.js';
-import { buildEnvelope, quotaWarning } from './common.js';
+import { buildEnvelope, mismatch, quotaWarning } from './common.js';
 
 function dateParts(date: string): [number, number, number] {
   const [y, m, d] = date.split('-').map(Number) as [number, number, number];
@@ -30,17 +30,6 @@ function nextDate(date: string): string {
 
 function toDeparture(d: RawDeparture, tz: string): Departure {
   return { stopPointRef: d.stopPointRef, line: d.line, mode: d.mode, modeName: d.modeName, direction: d.direction, origin: d.origin, destination: d.destination, platform: d.platform, timetabledTime: d.timetabledTime, timetabledTimeLocal: toLocalIso(d.timetabledTime, tz), realtime: false, cancelled: d.cancelled, tripCode: d.tripCode };
-}
-
-function mismatch(resolved: ResolvedStop, departures: RawDeparture[], warnings: string[], containsRequestedRef: boolean): void {
-  if (containsRequestedRef) return;
-  if (departures.length === 0) return;
-  const returned = departures[0]!;
-  if (!returned.stopPointRef && !returned.stopName) return;
-  const requested = resolved.chosen.stopPointRef;
-  resolved.chosen = { ...resolved.chosen, ...(returned.stopPointRef ? { stopPointRef: returned.stopPointRef } : {}), ...(returned.stopName ? { name: returned.stopName } : {}), confidence: 'low' };
-  resolved.note = `Die angefragte Haltestelle ${requested} existiert nicht; verwendet wurde ${resolved.chosen.name}.`;
-  warnings.push(`Die angefragte Haltestelle ${requested} existiert nicht; verwendet wurde ${resolved.chosen.name}.`);
 }
 
 export async function timetable(args: { stop: string; date?: string; maxResults?: number }, ctx: ToolContext): Promise<ToolEnvelope> {

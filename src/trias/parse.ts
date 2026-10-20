@@ -104,12 +104,12 @@ export function parseTrips(xml: string): { journeys: RawJourney[]; notripfound: 
       if (il || cl) {
         const value = il ?? cl;
         const kind: 'interchange' | 'continuous' = il ? 'interchange' : 'continuous';
-        return { kind, origin: text(value.LegStart?.LocationName), destination: text(value.LegEnd?.LocationName), departureTime: value.TimeWindowStart, arrivalTime: value.TimeWindowEnd, durationMinutes: durMinutes(value.Duration), intermediateStops: [] };
+        return { kind, origin: text(value.LegStart?.LocationName), destination: text(value.LegEnd?.LocationName), originStopPointRef: value.LegStart?.StopPointRef, destinationStopPointRef: value.LegEnd?.StopPointRef, departureTime: value.TimeWindowStart, arrivalTime: value.TimeWindowEnd, durationMinutes: durMinutes(value.Duration), intermediateStops: [] };
       }
       const timed = leg?.TimedLeg ?? {};
       const service = timed.Service ?? {};
       const section = service.ServiceSection ?? {};
-      return { kind: 'timed' as const, line: text(section.PublishedLineName), mode: section.Mode?.PtMode, origin: text(timed.LegBoard?.StopPointName), destination: text(timed.LegAlight?.StopPointName), departureTime: timed.LegBoard?.ServiceDeparture?.TimetabledTime, arrivalTime: timed.LegAlight?.ServiceArrival?.TimetabledTime, platform: text(timed.LegBoard?.PlannedBay), intermediateStops: toArray(timed.IntermediateCall ?? timed.LegIntermediates).map((call: any) => ({ name: text(call.StopPointName) ?? '', arrivalTime: call.ServiceArrival?.TimetabledTime, departureTime: call.ServiceDeparture?.TimetabledTime })) };
+      return { kind: 'timed' as const, line: text(section.PublishedLineName), mode: section.Mode?.PtMode, origin: text(timed.LegBoard?.StopPointName), destination: text(timed.LegAlight?.StopPointName), originStopPointRef: timed.LegBoard?.StopPointRef, destinationStopPointRef: timed.LegAlight?.StopPointRef, departureTime: timed.LegBoard?.ServiceDeparture?.TimetabledTime, arrivalTime: timed.LegAlight?.ServiceArrival?.TimetabledTime, platform: text(timed.LegBoard?.PlannedBay), intermediateStops: toArray(timed.IntermediateCall ?? timed.LegIntermediates).map((call: any) => ({ name: text(call.StopPointName) ?? '', arrivalTime: call.ServiceArrival?.TimetabledTime, departureTime: call.ServiceDeparture?.TimetabledTime })) };
     });
     return { startTime: trip.StartTime, endTime: trip.EndTime, durationMinutes: durMinutes(trip.Duration) ?? 0, interchanges: Number(trip.Interchanges ?? 0), legs };
   });

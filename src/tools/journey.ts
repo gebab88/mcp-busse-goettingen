@@ -24,13 +24,19 @@ export async function journey(args: { from: string; to: string; when?: string; m
     const firstLeg = response.journeys[0]?.legs[0];
     const lastJourney = response.journeys[0];
     const lastLeg = lastJourney?.legs[lastJourney.legs.length - 1];
-    resolvedFrom.chosen = { ...resolvedFrom.chosen, confidence: 'low' };
-    resolvedTo.chosen = { ...resolvedTo.chosen, confidence: 'low' };
-    if (firstLeg?.origin) resolvedFrom.chosen = { ...resolvedFrom.chosen, name: firstLeg.origin };
-    if (lastLeg?.destination) resolvedTo.chosen = { ...resolvedTo.chosen, name: lastLeg.destination };
-    resolvedFrom.note = `Die angefragte Start-Haltestelle ${resolvedFrom.chosen.stopPointRef} existiert nicht; die Antwort kann eine abweichende Haltestelle betreffen.`;
-    resolvedTo.note = `Die angefragte Ziel-Haltestelle ${resolvedTo.chosen.stopPointRef} existiert nicht; die Antwort kann eine abweichende Haltestelle betreffen.`;
-    warnings.push('Mindestens eine angefragte Haltestelle existiert nicht; die Antwort kann abweichende Haltestellen betreffen.');
+    const requestedFrom = resolvedFrom.chosen.stopPointRef;
+    const requestedTo = resolvedTo.chosen.stopPointRef;
+    if (firstLeg) {
+      resolvedFrom.chosen = { ...resolvedFrom.chosen, ...(firstLeg.originStopPointRef ? { stopPointRef: firstLeg.originStopPointRef } : {}), ...(firstLeg.origin ? { name: firstLeg.origin } : {}), confidence: 'low' };
+      resolvedFrom.note = `Die angefragte Haltestelle ${requestedFrom} existiert nicht; verwendet wurde ${resolvedFrom.chosen.name}.`;
+      warnings.push(resolvedFrom.note);
+    }
+    if (lastLeg) {
+      resolvedTo.chosen = { ...resolvedTo.chosen, ...(lastLeg.destinationStopPointRef ? { stopPointRef: lastLeg.destinationStopPointRef } : {}), ...(lastLeg.destination ? { name: lastLeg.destination } : {}), confidence: 'low' };
+      resolvedTo.note = `Die angefragte Haltestelle ${requestedTo} existiert nicht; verwendet wurde ${resolvedTo.chosen.name}.`;
+      warnings.push(resolvedTo.note);
+    }
+    if (!firstLeg && !lastLeg) warnings.push('Mindestens eine angefragte Haltestelle existiert nicht; die Antwort kann abweichende Haltestellen betreffen.');
   }
   if (response.notripfound) warnings.push('Für diese Verbindung wurde keine Fahrt gefunden; möglicherweise ist das Tageskontingent (10.000 Aufrufe/Tag) erschöpft.');
   return buildEnvelope({ resolvedFrom, resolvedTo, journeys: response.journeys.map((item) => toJourney(item, ctx.cfg.timezone)) }, { requestUrl: ctx.cfg.baseUrl, warnings });

@@ -1,7 +1,7 @@
-import type { Departure, RawDeparture, ResolvedStop } from '../trias/types.js';
+import type { Departure, RawDeparture } from '../trias/types.js';
 import { isoToMinutes, toLocalIso } from '../time.js';
 import type { ToolContext, ToolEnvelope } from './common.js';
-import { buildEnvelope, quotaWarning } from './common.js';
+import { buildEnvelope, mismatch, quotaWarning } from './common.js';
 
 const WINDOW_MINUTES = 120;
 
@@ -17,17 +17,6 @@ function toDeparture(d: RawDeparture, tz: string): Departure {
     cancelled: d.cancelled,
     tripCode: d.tripCode,
   };
-}
-
-function mismatch(resolved: ResolvedStop, departures: RawDeparture[], warnings: string[], containsRequestedRef: boolean): void {
-  if (containsRequestedRef) return;
-  if (departures.length === 0) return;
-  const returned = departures[0]!;
-  if (!returned.stopPointRef && !returned.stopName) return;
-  const requested = resolved.chosen.stopPointRef;
-  resolved.chosen = { ...resolved.chosen, ...(returned.stopPointRef ? { stopPointRef: returned.stopPointRef } : {}), ...(returned.stopName ? { name: returned.stopName } : {}), confidence: 'low' };
-  resolved.note = `Die angefragte Haltestelle ${requested} existiert nicht; verwendet wurde ${resolved.chosen.name}.`;
-  warnings.push(`Die angefragte Haltestelle ${requested} existiert nicht; verwendet wurde ${resolved.chosen.name}.`);
 }
 
 export async function departures(args: { stop: string; when?: string; maxResults?: number; includeRealtime?: boolean }, ctx: ToolContext): Promise<ToolEnvelope> {
