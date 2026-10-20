@@ -35,7 +35,7 @@ describe('config', () => {
   it('throws ConfigError when RequestorRef missing', () => {
     const cwd = vi.spyOn(process, 'cwd').mockReturnValue('/path/without-a-dotenv');
     try {
-      expect(() => loadConfig()).toThrowError(/RequestorRef/i);
+      expect(() => loadConfig()).toThrowError(ConfigError);
     } finally {
       cwd.mockRestore();
     }

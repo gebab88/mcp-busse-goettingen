@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { TtlCache } from '../src/cache.js';
 
 describe('cache', () => {
+  afterEach(() => { vi.useRealTimers(); });
   it('set/get', () => {
     const c = new TtlCache<string>(300);
     c.set('a', 'x');
@@ -19,7 +20,6 @@ describe('cache', () => {
     c.set('a', 'x');
     vi.advanceTimersByTime(301_000);
     expect(c.get('a')).toBeUndefined();
-    vi.useRealTimers();
   });
 
   it('lru eviction', () => {

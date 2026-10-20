@@ -81,3 +81,59 @@ describe('build', () => {
     expect(xml).toContain('<NumberOfResults>3</NumberOfResults>');
   });
 });
+describe('build empty LocationName', () => {
+  it('stop event emits empty LocationName when explicitly supplied', () => {
+    const xml = buildStopEventRequest({
+      requestorRef: 'REF-1',
+      language: 'de',
+      stopPointRef: 'de:03152:33924',
+      locationName: '',
+      when: '2026-10-20T12:00:00Z',
+      includeRealtime: true,
+      messageId: 1,
+    });
+    expect(xml).toContain('<LocationName><Text></Text></LocationName>');
+  });
+
+  it('stop event omits LocationName when not supplied', () => {
+    const xml = buildStopEventRequest({
+      requestorRef: 'REF-1',
+      language: 'de',
+      stopPointRef: 'de:03152:33924',
+      when: '2026-10-20T12:00:00Z',
+      includeRealtime: true,
+      messageId: 1,
+    });
+    expect(xml).not.toContain('<LocationName>');
+  });
+
+  it('trip emits empty LocationName when explicitly supplied', () => {
+    const xml = buildTripRequest({
+      requestorRef: 'REF-1',
+      language: 'de',
+      fromRef: 'de:03152:1',
+      fromName: '',
+      toRef: 'de:03152:2',
+      toName: '',
+      when: '2026-10-20T12:00:00Z',
+      maxResults: 3,
+      includeRealtime: false,
+      messageId: 1,
+    });
+    expect(xml).toContain('<LocationName><Text></Text></LocationName>');
+  });
+
+  it('trip omits LocationName when not supplied', () => {
+    const xml = buildTripRequest({
+      requestorRef: 'REF-1',
+      language: 'de',
+      fromRef: 'de:03152:1',
+      toRef: 'de:03152:2',
+      when: '2026-10-20T12:00:00Z',
+      maxResults: 3,
+      includeRealtime: false,
+      messageId: 1,
+    });
+    expect(xml).not.toContain('<LocationName>');
+  });
+});

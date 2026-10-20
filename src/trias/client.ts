@@ -19,7 +19,7 @@ export class TriasClient {
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'text/xml; charset=utf-8', Accept: 'text/xml' },
+        headers: { 'Content-Type': 'text/xml; charset=utf-8', 'Accept': 'text/xml' },
         body: xml,
         signal: controller.signal,
       });

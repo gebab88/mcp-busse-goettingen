@@ -58,7 +58,7 @@ export function buildStopEventRequest(req: {
   includeRealtime: boolean;
   messageId: number;
 }): string {
-  const locationName = req.locationName
+  const locationName = req.locationName !== undefined
     ? `<LocationName><Text>${escapeXml(req.locationName)}</Text></LocationName>`
     : '';
   return (
@@ -91,10 +91,10 @@ export function buildTripRequest(req: {
   includeRealtime: boolean;
   messageId: number;
 }): string {
-  const fromName = req.fromName
+  const fromName = req.fromName !== undefined
     ? `<LocationName><Text>${escapeXml(req.fromName)}</Text></LocationName>`
     : '';
-  const toName = req.toName
+  const toName = req.toName !== undefined
     ? `<LocationName><Text>${escapeXml(req.toName)}</Text></LocationName>`
     : '';
   return (
