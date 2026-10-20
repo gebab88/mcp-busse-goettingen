@@ -33,12 +33,7 @@ describe('config', () => {
   });
 
   it('throws ConfigError when RequestorRef missing', () => {
-    expect(() => loadConfig()).toThrow(ConfigError);
-    try {
-      loadConfig();
-    } catch (e) {
-      expect((e as Error).message).toMatch(/RequestorRef/i);
-    }
+    expect(() => loadConfig()).toThrowError(/RequestorRef/i);
   });
 
   it('returns defaults for TEST-REF', () => {

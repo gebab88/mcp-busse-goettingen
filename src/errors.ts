@@ -57,7 +57,7 @@ export class ParseError extends TriasError {
 }
 
 export class ApiError extends TriasError {
-  constructor(apiCode: string, message: string) {
+  constructor(readonly apiCode: string, message: string) {
     super('API_ERROR', `Die Schnittstelle meldet einen Fehler: ${message}`);
     this.name = 'ApiError';
   }
