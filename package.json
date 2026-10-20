@@ -1,9 +1,27 @@
 {
   "name": "mcp-busse-goettingen",
   "version": "0.1.0",
+  "description": "MCP-Server für Abfahrtszeiten im Göttinger Nahverkehr über die TRIAS-Schnittstelle (VDV 431-2)",
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "trias",
+    "efa",
+    "göttingen",
+    "nvv",
+    "fahrplan",
+    "departures"
+  ],
   "type": "module",
   "engines": {
     "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gebab88/mcp-busse-goettingen.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gebab88/mcp-busse-goettingen/issues"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",

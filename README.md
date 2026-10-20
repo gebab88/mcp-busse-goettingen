@@ -15,6 +15,8 @@ cp .env.example .env
 
 Trage in `.env` den von Connect Fahrplanauskunft GmbH erhaltenen Wert für `RequestorRef` ein.
 
+Der `RequestorRef` ist eine Zugangskennung für die TRIAS-Schnittstelle und wird **nicht** mit diesem Repository verteilt. Du beantragst ihn selbst bei Connect Fahrplanauskunft GmbH (EFA Deutschland) und trägst ihn in deine eigene `.env` ein. Ohne gültigen `RequestorRef` startet der Server nicht.
+
 ## Start
 
 Für den Produktivbetrieb:
@@ -45,8 +47,8 @@ Der Server liest seine `.env` aus dem **Arbeitsverzeichnis**, in dem er gestarte
     "servers": {
       "busse-goettingen": {
         "type": "local",
-        "command": ["node", "/Users/georg/Software/MCP_Busse_Goettingen/dist/index.js"],
-        "cwd": "/Users/georg/Software/MCP_Busse_Goettingen"
+        "command": ["node", "/PFAD/ZUM/PROJEKT/dist/index.js"],
+        "cwd": "/PFAD/ZUM/PROJEKT"
       }
     }
   }
@@ -60,12 +62,14 @@ Der Server liest seine `.env` aus dem **Arbeitsverzeichnis**, in dem er gestarte
   "mcpServers": {
     "busse-goettingen": {
       "command": "node",
-      "args": ["/Users/georg/Software/MCP_Busse_Goettingen/dist/index.js"],
-      "cwd": "/Users/georg/Software/MCP_Busse_Goettingen"
+      "args": ["/PFAD/ZUM/PROJEKT/dist/index.js"],
+      "cwd": "/PFAD/ZUM/PROJEKT"
     }
   }
 }
 ```
+
+`/PFAD/ZUM/PROJEKT` steht für das Verzeichnis, in dem du das Projekt geklont hast.
 
 So steht der `RequestorRef` **nicht** in der Client-Konfiguration, sondern bleibt in der `.env` des Projekts. Alternativ kann der Client den RequestorRef auch als Umgebungsvariable setzen; Umgebungsvariablen haben Vorrang vor der `.env`.
 
@@ -80,7 +84,7 @@ Bei unscharfer Auflösung nennen `data.resolved`, `data.resolvedFrom` oder `data
 
 ## Umgang mit dem RequestorRef
 
-Der `RequestorRef` ist eine Zugangskennung und bleibt auf diesem Rechner:
+Der `RequestorRef` ist eine Zugangskennung und verlässt deinen Rechner nicht:
 
 - Er steht ausschließlich in `.env`, die in `.gitignore` liegt. `.env.example` enthält nur die Vorlage ohne Wert.
 - Er wird nie protokolliert. Der Server schreibt nichts auf stdout außer dem MCP-Protokoll, und Fehlermeldungen gehen auf stderr.
